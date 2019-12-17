@@ -20,9 +20,14 @@ const bot = new Discord.Client();
 // dotenv hides the token
 require('dotenv/config');
 const http = require('http');
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
+// Token
 const token = process.env.TOKEN;
 
+// Prefix
+const PREFIX = '.';
+// Version
+var version = '1.0.0';
 // this is a simple server
 http.createServer().listen(port);
 
@@ -31,12 +36,25 @@ bot.on('ready', () =>{
 })
 
 bot.on('message', msg=>{
-    if(msg.content === 'joe'){
-        msg.channel('mama');
+    
+    let args = msg.content.substring(PREFIX.length).split(" ");
+
+    switch(args[0]){
+        // embeds
+        case "embed":
+           const embed = new Discord.RichEmbed()
+           .setTitle("Title")
+           .addField('Player Name', msg.author.username, true)
+           .addField('Current Server', msg.guild.name, true)
+           .setColor(B52607)
+           .setThumbnail(msg.author.avatarURL0)
+           .setFooter('footer')
+           msg.channel.sendEmbed(embed);
+           break;
     }
 })
 
 bot.on('error', err =>{
     console.log(err);
 });
-bot.login(process.env.BOT_TOKEN);
+bot.login(process.env.token);
