@@ -11,6 +11,7 @@
 // Go to https://dashboard.heroku.com/apps/coalitionofdevils/deploy/github
 // Scroll down to manual deploy
 // click deploy branch
+// The procfile makes it so the bot stays up 24/7
 
 // variables
 const Discord = require('discord.js');
