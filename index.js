@@ -1,58 +1,82 @@
-// How to upload the file to github
-// 1) Make the changes
-// 2) Save the changes
-// 3) open the folder through right click and select open with git bash
-// 4) Or just cd to the directory
-// 5) Put down the code
-// - git add .
-// - git commit -m "What you changeed"
-// - git push origin master
-// This sends the file to github, now we need to redoply the file through heroku
-// Go to https://dashboard.heroku.com/apps/coalitionofdevils/deploy/github
-// Scroll down to manual deploy
-// click deploy branch
-// The procfile makes it so the bot stays up 24/7
-
 // variables
 const Discord = require('discord.js');
 const bot = new Discord.Client();
+const ms = require("ms");
 
 // dotenv hides the token
 require('dotenv/config');
-const http = require('http');
-const port = process.env.PORT;
+
 // Token
 const token = process.env.TOKEN;
 
 // Prefix
-const PREFIX = '.';
-// Version
-var version = '1.0.0';
+const PREFIX = "!";
+
+const fs = require('fs');
+bot.commands = new Discord.Collection();
+
+// Make a command folder inside the project and name it "commands"
+const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
+for(const file of commandFiles){
+    const command = require(`./commands/${file}`);
+ 
+    bot.commands.set(command.name, command);
+}
+
+
 // this is a simple server
-http.createServer().listen(port);
+// http.createServer().listen(port);
 
-bot.on('ready', () =>{
-    console.log('The Coalition is Online!');
-})
+bot.on('ready', async () => {
+    console.log(`The Coalition is up and running!`);
 
-bot.on('message', msg=>{
-    
-    let args = msg.content.substring(PREFIX.length).split(" ");
+    // Every 5 seconds check the "muted.json" file to see when a users mute is up
+    bot.setInterval(() => {
+        for (const i in bot.muted) {
+            const time = bot.muted[i].time;
+            const guildId = bot.muted[i].guild;
+            const guild = bot.guilds.get(guildId);
+            const member = guild.members.get(i);
+            const mutedRole = guild.roles.find(mR => mR.name === 'Muted');
+            if (!mutedRole) continue;
 
-    switch(args[0]){
-        // embeds
-        case "embed":
-           const embed = new Discord.RichEmbed()
-           .setTitle("Title")
-           .addField('Player Name', msg.author.username, true)
-           .addField('Current Server', msg.guild.name, true)
-           .setColor(B52607)
-           .setThumbnail(msg.author.avatarURL0)
-           .setFooter('footer')
-           msg.channel.sendEmbed(embed);
+            if (Date.now() > time) {
+                member.removeRole(mutedRole);
+                delete bot.muted[i];
+                fs.writeFile('./muted.json', JSON.stringify(bot.muted), err => {
+                    if(err) throw err;
+                });
+            }
+        }
+    }, 5000);
+});
+
+bot.on('message', message => {
+    let args = message.content.substring(PREFIX.length).split(" ");
+
+    switch (args[0]) {
+
+
+        case "ping":
+         bot.commands.get('ping').execute(message, args);
            break;
-    }
-})
+        case "whoami":
+         bot.commands.get('whoami').execute(message, args);
+            break;
+        case "info":
+         bot.commands.get('info').execute(message, args);
+            break;
+        case "test":
+         bot.commands.get('test').execute(message, args);
+            break;
+      //  case "mute":
+     //    bot.commands.get('mute').execute(message, args);
+     //   break;
+     //   case "unmute":
+      //   bot.commands.get('unmute').execute(message, args);
+      //  break;
+    } 
+});
 
 bot.on('error', err =>{
     console.log(err);
