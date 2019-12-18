@@ -21,11 +21,25 @@ const bot = new Discord.Client();
 require('dotenv/config');
 const http = require('http');
 const port = process.env.PORT;
+http.createServer().listen(port);
 // Token
 const token = process.env.TOKEN;
 
 // Prefix
-const PREFIX = '.';
+const PREFIX = '!';
+
+const fs = require('fs');
+bot.commands = new Discord.Collection();
+
+// Make a command folder inside the project and name it "commands"
+const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
+for(const file of commandFiles){
+  const command = require(`./commands/${file}`);
+
+  bot.commands.set(command.name, command);
+}
+
+
 // Version
 var version = '1.0.0';
 // this is a simple server
@@ -35,23 +49,26 @@ bot.on('ready', () =>{
     console.log('The Coalition is Online!');
 })
 
-bot.on('message', msg=>{
+bot.on('message', message=>{
     
-    let args = msg.content.substring(PREFIX.length).split(" ");
+    let args = message.content.substring(PREFIX.length).split(" ");
 
     switch(args[0]){
         // embeds
-        case "embed":
-           const embed = new Discord.RichEmbed()
-           .setTitle("Title")
-           .addField('Player Name', msg.author.username, true)
-           .addField('Current Server', msg.guild.name, true)
-           .setColor(B52607)
-           .setThumbnail(msg.author.avatarURL0)
-           .setFooter('footer')
-           msg.channel.sendEmbed(embed);
+        case 'embed':
+         bot.commands.get('ping').execute(message, args);
            break;
-    }
+        case 'info':
+        bot.commands.get('info').execute(message, args);
+        // message.channel.sendMessage('Masquence is currently working on Dementia, future projects are in mind but dementia is still in a WIP state and will remain so unless announced.')
+        break;
+        case 'test':
+        bot.commands.get('test').execute(message, args);
+        // if(message.member.roles.find(r=> r.name === "Admins")) return message.channel.send('You do not have permissions to use this command')
+        // .then(msg=> msg.delete(5000));
+        // message.reply('test finished')
+        break;
+    } 
 })
 
 bot.on('error', err =>{
