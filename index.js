@@ -1,3 +1,16 @@
+// ----- Command JS File -----
+module.exports = {
+    name: 'ping',
+    description: "says ping!",
+    execute(message, args){
+        message.channel.send('pong!');
+    }
+}
+// put inside a folder called "commands" and make it a js file, name the file "ping"
+
+
+
+
 // How to upload the file to github
 // 1) Make the changes
 // 2) Save the changes
@@ -34,42 +47,39 @@ bot.commands = new Discord.Collection();
 // Make a command folder inside the project and name it "commands"
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
 for(const file of commandFiles){
-  const command = require(`./commands/${file}`);
-
-  bot.commands.set(command.name, command);
+    const command = require(`./commands/${file}`);
+ 
+    bot.commands.set(command.name, command);
 }
 
 
-// Version
-var version = '1.0.0';
 // this is a simple server
 http.createServer().listen(port);
 
-bot.on('ready', () =>{
-    console.log('The Coalition is Online!');
-})
+bot.on('ready', () => {
+    console.log("The Coalition is online!");
+});
 
-bot.on('message', message=>{
-    
+bot.on('message', message => {
     let args = message.content.substring(PREFIX.length).split(" ");
 
-    switch(args[0]){
+    switch (args[0]) {
         // embeds
-        case 'embed':
+        case "embed":
          bot.commands.get('ping').execute(message, args);
            break;
-        case 'info':
+        case "info":
         bot.commands.get('info').execute(message, args);
         // message.channel.sendMessage('Masquence is currently working on Dementia, future projects are in mind but dementia is still in a WIP state and will remain so unless announced.')
         break;
-        case 'test':
+        case "test":
         bot.commands.get('test').execute(message, args);
         // if(message.member.roles.find(r=> r.name === "Admins")) return message.channel.send('You do not have permissions to use this command')
         // .then(msg=> msg.delete(5000));
         // message.reply('test finished')
         break;
     } 
-})
+});
 
 bot.on('error', err =>{
     console.log(err);
