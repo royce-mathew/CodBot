@@ -31,7 +31,6 @@ bot.on('ready', async () => {
 // Whenever the player says a message
 bot.on('message', message => {
     let args = message.content.substring(PREFIX.length).split(" ");
-
     switch (args[0]) {
 
         case "ping":
@@ -49,28 +48,29 @@ bot.on('message', message => {
 
            break;
         case "whoami":
-         bot.commands.get('whoami').execute(message, args);
+         bot.commands.get('whoami').execute(message, args, bot);
             break;
         case "info":
-         bot.commands.get('info').execute(message, args);
+         bot.commands.get('info').execute(message, args, bot);
             break;
         case "test":
-         bot.commands.get('test').execute(message, args);
+         bot.commands.get('test').execute(message, args, bot);
             break;
         case "kick":
-         bot.commands.get('kick').execute(message, args);
+         bot.commands.get('kick').execute(message, args, bot);
             break;
         case "purge":
-         bot.commands.get("purge").execute(message, args);
+         bot.commands.get("purge").execute(message, args, bot);
         break;
         case "8ball":
-         bot.commands.get("8ball").execute(message, args);
+         bot.commands.get("8ball").execute(message, args, bot);
         break;
         case "mute":
-         bot.commands.get("mute").execute(message, args);
+         bot.commands.get("mute").execute(message, args, bot);
         break;
         case "unmute":
-         bot.commands.get("unmute").execute(message, args);
+         bot.commands.get("unmute").execute(message, args, bot);
+        break;
     } 
 });
 

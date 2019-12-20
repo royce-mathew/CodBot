@@ -2,7 +2,7 @@
 module.exports = {
     name: 'info',
     description: "gives info",
-    execute(message, args){
+    execute(message, args, bot){
         message.channel.sendMessage('Masquence is currently working on Dementia, future projects are in mind but dementia is still in a WIP state and will remain so unless announced.')
     }
 }

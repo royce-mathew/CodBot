@@ -1,7 +1,8 @@
+const Discord = require('discord.js');
 module.exports = {
     name: 'mute',
     description: "mutes a person",
-    execute(message, args){
+    execute(message, args, bot){
        if(message.member.roles.find(r => r.name === "Admins")){
         let mutedrole = message.guild.roles.find(`name`,"Muted");
         var mutedmember = message.mentions.members.first(); // sets the mentioned user to the var kickedmember
@@ -14,6 +15,18 @@ module.exports = {
         mutedmember.addRole(mutedrole) //if reason, kick
             .catch(error => message.reply(`Sorry ${message.author} I couldn't mute because of : ${error}`)); //if error, display error
         message.reply(`${mutedmember.user} has been muted by ${message.author} because: ${mutereason}`); // sends a message saying he was muted
+        const embed = new Discord.RichEmbed()
+        .addField(`**MUTED**`,
+        `**User Id: **${mutedmember.id}
+        **Username: **${mutedmember.user.tag}
+        **Description: **${mutereason}` , false)
+        .setColor(0x6C1503) // remember the 0x
+        .setAuthor(
+        `${mutedmember.user.tag}`,
+        `${mutedmember.user.avatarURL}`)
+        .setThumbnail(mutedmember.user.avatarURL)
+        .setFooter(`${message.author.tag} (ADMIN)   ||   ${timestamp = new Date()}`, `${message.author.avatarURL}` )
+        bot.channels.find("name","modlogs").sendEmbed(embed)
        } else {
            return message.channel.send("You do not have permissions to use this command")
        }
