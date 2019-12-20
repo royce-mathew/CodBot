@@ -23,42 +23,30 @@ for(const file of commandFiles){
     bot.commands.set(command.name, command);
 }
 
-
-// this is a simple server
-// http.createServer().listen(port);
-
+// Tells us when the bot is online
 bot.on('ready', async () => {
     console.log(`The Coalition is up and running!`);
-
-    // Every 5 seconds check the "muted.json" file to see when a users mute is up
-    bot.setInterval(() => {
-        for (const i in bot.muted) {
-            const time = bot.muted[i].time;
-            const guildId = bot.muted[i].guild;
-            const guild = bot.guilds.get(guildId);
-            const member = guild.members.get(i);
-            const mutedRole = guild.roles.find(mR => mR.name === 'Muted');
-            if (!mutedRole) continue;
-
-            if (Date.now() > time) {
-                member.removeRole(mutedRole);
-                delete bot.muted[i];
-                fs.writeFile('./muted.json', JSON.stringify(bot.muted), err => {
-                    if(err) throw err;
-                });
-            }
-        }
-    }, 5000);
 });
 
+// Whenever the player says a message
 bot.on('message', message => {
     let args = message.content.substring(PREFIX.length).split(" ");
 
     switch (args[0]) {
 
-
         case "ping":
-         bot.commands.get('ping').execute(message, args);
+            
+            // get the ping of the bot
+            message.channel.send({embed: {
+                color: 0x6C1503,
+                fields: [{
+                    name: "Ping",
+                    value: "The bot's ping is: " + Math.round(bot.ping) + ' ms'
+              }]
+            }
+            })
+            //End
+
            break;
         case "whoami":
          bot.commands.get('whoami').execute(message, args);
@@ -69,12 +57,20 @@ bot.on('message', message => {
         case "test":
          bot.commands.get('test').execute(message, args);
             break;
-      //  case "mute":
-     //    bot.commands.get('mute').execute(message, args);
-     //   break;
-     //   case "unmute":
-      //   bot.commands.get('unmute').execute(message, args);
-      //  break;
+        case "kick":
+         bot.commands.get('kick').execute(message, args);
+            break;
+        case "purge":
+         bot.commands.get("purge").execute(message, args);
+        break;
+        case "8ball":
+         bot.commands.get("8ball").execute(message, args);
+        break;
+        case "mute":
+         bot.commands.get("mute").execute(message, args);
+        break;
+        case "unmute":
+         bot.commands.get("unmute").execute(message, args);
     } 
 });
 
