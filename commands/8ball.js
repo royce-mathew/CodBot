@@ -3,12 +3,14 @@ const responses = [
     "It is certain",
     "It is decidedly so",
     "Without a doubt",
+    "I doubt it",
     "Yes – definitely",
     "As I see it",
-    "yes",
+    "No",
     "Most Likely",
     "Yes",
-    "Signs point to yes"
+    "Signs point to yes",
+    "Signs point to no"
 ];
 
 
