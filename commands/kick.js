@@ -24,9 +24,27 @@ module.exports = {
     // Now, time for a swift kick in the nuts!
     member.kick(reason)
       .catch(error => message.reply(`Sorry ${message.author} I couldn't kick because of : ${error}`));
-    message.reply(`${member.user.tag} has been kicked by ${message.author.tag} because: ${reason}`);
+    //normal 
+     const embed = new Discord.RichEmbed()
+      .addField(`**KICKED**`,
+      `**User Id: **${member.user.id}
+      **Username: **${member.user.tag}
+      **Description: **${reason}` , false)
+      .setColor(0x6C1503) // remember the 0x
+      .setAuthor(
+      `${member.user.tag}`,
+      `${member.user.avatarURL}`)
+      .setThumbnail(member.user.avatarURL)
+      .setTitle("Coalition of Devils")
+      .setFooter(`${message.author.tag} (ADMIN)`, `${message.author.avatarURL}` )
+      .setTimestamp(message.createdAt)
+      message.channel.send(embed)
 
-        const embed = new Discord.RichEmbed()
+
+
+
+    //logs
+    embedlogs = new Discord.RichEmbed()
         .addField(`**KICKED**`,
         `**User Id: **${member.user.id}
         **Username: **${member.user.tag}
@@ -35,8 +53,10 @@ module.exports = {
         .setAuthor(
         `${member.user.tag}`,
         `${member.user.avatarURL}`)
+        .setTitle("Coalition of Devils")
         .setThumbnail(member.user.avatarURL)
-        .setFooter(`${message.author.tag} (ADMIN)   ||   ${timestamp = new Date()}`, `${message.author.avatarURL}` )
-        bot.channels.find("name","modlogs").sendEmbed(embed)
+        .setFooter(`${message.author.tag} (ADMIN)`, `${message.author.avatarURL}` )
+        .setTimestamp(message.createdAt)
+        bot.channels.find("name","modlogs").send(embedlogs)
     }
 }

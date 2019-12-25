@@ -14,7 +14,9 @@ module.exports = {
         if (!mutereason) return message.reply("Please indicate a reason for the mute!") // if no reason
         mutedmember.addRole(mutedrole) //if reason, kick
             .catch(error => message.reply(`Sorry ${message.author} I couldn't mute because of : ${error}`)); //if error, display error
-        message.reply(`${mutedmember.user} has been muted by ${message.author} because: ${mutereason}`); // sends a message saying he was muted
+       
+       
+         //normal
         const embed = new Discord.RichEmbed()
         .addField(`**MUTED**`,
         `**User Id: **${mutedmember.id}
@@ -24,9 +26,28 @@ module.exports = {
         .setAuthor(
         `${mutedmember.user.tag}`,
         `${mutedmember.user.avatarURL}`)
+        .setTitle("Coalition of Devils")
         .setThumbnail(mutedmember.user.avatarURL)
-        .setFooter(`${message.author.tag} (ADMIN)   ||   ${timestamp = new Date()}`, `${message.author.avatarURL}` )
-        bot.channels.find("name","modlogs").sendEmbed(embed)
+        .setFooter(`${message.author.tag} (ADMIN)`, `${message.author.avatarURL}` )
+        .setTimestamp(message.createdAt)
+        message.channel.send(embed)
+       
+       
+        //logs
+        const embedlogs = new Discord.RichEmbed()
+        .addField(`**MUTED**`,
+        `**User Id: **${mutedmember.id}
+        **Username: **${mutedmember.user.tag}
+        **Description: **${mutereason}` , false)
+        .setColor(0x6C1503) // remember the 0x
+        .setAuthor(
+        `${mutedmember.user.tag}`,
+        `${mutedmember.user.avatarURL}`)
+        .setTitle("Coalition of Devils")
+        .setThumbnail(mutedmember.user.avatarURL)
+        .setFooter(`${message.author.tag} (ADMIN)`, `${message.author.avatarURL}` )
+        .setTimestamp(message.createdAt)
+        bot.channels.find("name","modlogs").send(embedlogs)
        } else {
            return message.channel.send("You do not have permissions to use this command")
        }

@@ -1,19 +1,9 @@
-// variables
+const fs = require('fs');
+const ms = require("ms");
 const Discord = require('discord.js');
 const bot = new Discord.Client();
-const ms = require("ms");
-
-// dotenv hides the token
-require('dotenv/config');
-
-// Token
-const token = process.env.TOKEN;
-
-// Prefix
-const PREFIX = "!";
-
-const fs = require('fs');
 bot.commands = new Discord.Collection();
+const { prefix, token } = require('./config.json');
 
 // Make a command folder inside the project and name it "commands"
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
@@ -30,11 +20,12 @@ bot.on('ready', async () => {
 
 // Whenever the player says a message
 bot.on('message', message => {
-    let args = message.content.substring(PREFIX.length).split(" ");
-    switch (args[0]) {
+    if (!message.content.startsWith(prefix) || message.author.bot) return;
+    const args = message.content.slice(prefix.length).split(/ +/);
+    const command = args.shift().toLowerCase();
+    if (!bot.commands.has(command)) return;
 
-        case "ping":
-            
+    if (command === 'ping') {
             // get the ping of the bot
             message.channel.send({embed: {
                 color: 0x6C1503,
@@ -45,32 +36,24 @@ bot.on('message', message => {
             }
             })
             //End
-
-           break;
-        case "whoami":
+        } else if (command === "whoami") {
          bot.commands.get('whoami').execute(message, args, bot);
-            break;
-        case "info":
+        } else if (command === "info") {
          bot.commands.get('info').execute(message, args, bot);
-            break;
-        case "test":
+        } else if (command === "test") {
          bot.commands.get('test').execute(message, args, bot);
-            break;
-        case "kick":
+        } else if (command === "kick") {
          bot.commands.get('kick').execute(message, args, bot);
-            break;
-        case "purge":
-         bot.commands.get("purge").execute(message, args, bot);
-        break;
-        case "8ball":
+        } else if (command === "purge") {
+         bot.commands.get("purge").execute(message, bot);
+        } else if (command === "8ball") {
          bot.commands.get("8ball").execute(message, args, bot);
-        break;
-        case "mute":
+        } else if (command === "mute") {
          bot.commands.get("mute").execute(message, args, bot);
-        break;
-        case "unmute":
+        } else if (command === "unmute") {
          bot.commands.get("unmute").execute(message, args, bot);
-        break;
+        } else if (command === "pp") {
+         bot.commands.get("pp").execute(message, args, bot);
     } 
 });
 

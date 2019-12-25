@@ -1,22 +1,28 @@
-var eightball = [ // sets the answers to an eightball
-    "yeeah",
-    "100 percent",
-    "no...",
-    "maybe?",
-    "probably.",
-    "I don't think so.",
-    "never!",
-    "you can try...",
-    "up to you!",
-    "your mom",
-]
+const Discord = require('discord.js');
+const responses = [
+    "It is certain",
+    "It is decidedly so",
+    "Without a doubt",
+    "Yes – definitely",
+    "As I see it",
+    "yes",
+    "Most Likely",
+    "Yes",
+    "Signs point to yes"
+];
+
 
 // ----- Command JS File -----
 module.exports = {
     name: '8ball',
-    description: "random 8 ball message",
+    description: "random 8ball answer",
     execute(message, args, bot){
-        if (args[1] != null) message.reply(eightball[Math.floor(Math.random() * eightball.length).toString(16)]); // if args[1], post random answer
-        else message.channel.send("bruh whats your question :niggaangry: (Correct usage: *8ball [question])"); // if not, error
+        const randomIndex = Math.floor(Math.random() * responses.length);
+        const embed = new Discord.RichEmbed()
+        .addField( `Response:`, `${responses[randomIndex]}`, false)
+        .setColor(0x6C1503) // remember the 0x
+        .setTitle("Coalition of Devils")
+        .setTimestamp(message.createdAt)
+        message.channel.send(embed)
     }
 }

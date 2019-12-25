@@ -1,8 +1,14 @@
+const Discord = require('discord.js');
 // ----- Command JS File -----
 module.exports = {
     name: 'info',
     description: "gives info",
     execute(message, args, bot){
-        message.channel.sendMessage('Masquence is currently working on Dementia, future projects are in mind but dementia is still in a WIP state and will remain so unless announced.')
+        const embed = new Discord.RichEmbed()
+        .addField( `Working on:`, `Dementia, future projects are in mind but dementia is still in a WIP state and will remain so unless announced`, false)
+        .setColor(0x6C1503) // remember the 0x
+        .setTitle(`Coalition Of Devils`)
+        .setTimestamp(message.createdAt)
+        message.channel.send(embed)
     }
 }

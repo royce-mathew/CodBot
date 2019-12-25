@@ -10,7 +10,9 @@ module.exports = {
         .addField('Username: ', message.author.username, false)
         .setColor(0x6C1503) // remember the 0x
         .setThumbnail(message.author.avatarURL)
+        .setTitle("Coalition of Devils")
         .setFooter('Coalition of Devils')
-        message.channel.sendEmbed(embed);
+        .setTimestamp(message.createdAt)
+        message.channel.send(embed);
     }
 }
