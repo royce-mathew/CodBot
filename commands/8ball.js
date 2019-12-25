@@ -19,7 +19,7 @@ module.exports = {
     execute(message, args, bot){
         const randomIndex = Math.floor(Math.random() * responses.length);
         const embed = new Discord.RichEmbed()
-        .addField( `Response:`, `${responses[randomIndex]}`, false)
+        .setDescription( `${responses[randomIndex]}, ${message.author}.`)
         .setColor(0x6C1503) // remember the 0x
         .setTitle("Coalition of Devils")
         .setTimestamp(message.createdAt)
