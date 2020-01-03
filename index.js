@@ -1,9 +1,11 @@
 const fs = require('fs');
 const ms = require("ms");
+const roblox = require('noblox.js')
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 bot.commands = new Discord.Collection();
-const { prefix, token } = require('./config.json');
+const { prefix, token, cookie, groupId, maximumRank} = require('./config.json');
+
 
 // Make a command folder inside the project and name it "commands"
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
@@ -12,6 +14,17 @@ for(const file of commandFiles){
  
     bot.commands.set(command.name, command);
 }
+
+function login() {
+    return roblox.cookieLogin(cookie);
+}
+login() // Log into ROBLOX
+    .then(function() { // After the function has been executed
+        console.log('Logged in.') // Log to the console that we've logged in
+    })
+    .catch(function(error) { // This is a catch in the case that there's an error. Not using this will result in an unhandled rejection error.
+        console.log(`Login error: ${error}`) // Log the error to console if there is one.
+    });
 
 // Tells us when the bot is online
 bot.on('ready', async () => {
@@ -54,7 +67,9 @@ bot.on('message', message => {
          bot.commands.get("unmute").execute(message, args, bot);
         } else if (command === "pp") {
          bot.commands.get("pp").execute(message, args, bot);
-    } 
+        } else if (command === "promote") {
+         bot.commands.get("promote").execute(message, args, bot, groupId, maximumRank, roblox);
+        }
 });
 
 bot.on('error', err =>{
