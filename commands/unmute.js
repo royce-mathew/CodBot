@@ -36,7 +36,7 @@ module.exports = {
         .setThumbnail(unmutedmember.user.avatarURL)
         .setFooter(`${message.author.tag} (ADMIN)`, `${message.author.avatarURL}`)
         .setTimestamp(message.createdAt)
-        bot.channels.find("name","modlogs").send(embedlogs)
+        bot.channels.find(x => x.name === "modlogs").send(embedlogs)
        } else {
            return message.channel.send("You do not have permissions to use this command")
        }

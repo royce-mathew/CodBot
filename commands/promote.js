@@ -50,7 +50,7 @@ module.exports = {
                             .setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${id}&width=420&height=420&format=png`)
                             .setFooter(`${message.author.tag} (ADMIN)`, `${message.author.avatarURL}` )
                             .setTimestamp(message.createdAt)
-                            bot.channels.find("name","rm-304").send(embedlogs)
+                            bot.channels.find(x => x.name === "rm-304").send(embedlogs)
                             
                         }).catch(function(err){
                             console.error(err)

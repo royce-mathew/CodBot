@@ -46,6 +46,6 @@ module.exports = {
     .setTitle("Coalition of Devils")
     .setFooter(`${message.author.tag} (ADMIN)`, `${message.author.avatarURL}` )
     .setTimestamp(message.createdAt)
-    bot.channels.find("name","modlogs").send(embedlogs)
+    bot.channels.find(x => x.name === "modlogs").send(embedlogs)
     }
 }
