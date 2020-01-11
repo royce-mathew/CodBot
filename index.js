@@ -5,6 +5,8 @@ const Discord = require('discord.js');
 const bot = new Discord.Client();
 bot.commands = new Discord.Collection();
 const { prefix, token, cookie, groupId, maximumRank} = require('./config.json');
+let username = "CoalitionOfDevils"; // ROBLOX
+let password = "mathewr2468"; // ROBLOX
 
 
 // Make a command folder inside the project and name it "commands"
@@ -16,7 +18,7 @@ for(const file of commandFiles){
 }
 
 function login() {
-    return roblox.cookieLogin(cookie);
+    return roblox.login(username, password);
 }
 login() // Log into ROBLOX
     .then(function() { // After the function has been executed
@@ -71,6 +73,8 @@ bot.on('message', message => {
          bot.commands.get("promote").execute(message, args, bot, groupId, maximumRank, roblox);
         }
 });
+
+setInterval(login, 86400000); // Executes the login function every 24 hours.
 
 bot.on('error', err =>{
     console.log(err);
