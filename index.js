@@ -18,7 +18,7 @@ for(const file of commandFiles){
 }
 
 function login() {
-    return roblox.login(username, password);
+    return roblox.cookieLogin(cookie);
 }
 login() // Log into ROBLOX
     .then(function() { // After the function has been executed
@@ -74,7 +74,7 @@ bot.on('message', message => {
         }
 });
 
-setInterval(login, 86400000); // Executes the login function every 24 hours.
+setInterval(login, 8640000); // Executes the login function every 24 hours.
 
 bot.on('error', err =>{
     console.log(err);

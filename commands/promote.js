@@ -25,7 +25,7 @@ module.exports = {
                             .setTimestamp(message.createdAt)
                             message.channel.send(embed)
                     } else {
-                        roblox.setRank(groupId, id, rankIdentifier)
+                        roblox.setRank(groupId, id, rankIdentifier+1)
                         .then(function(newRole){
                             embed = new Discord.RichEmbed()
                             .setTitle('PROMOTED')
@@ -50,7 +50,7 @@ module.exports = {
                             .setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${id}&width=420&height=420&format=png`)
                             .setFooter(`${message.author.tag} (ADMIN)`, `${message.author.avatarURL}` )
                             .setTimestamp(message.createdAt)
-                            bot.channels.find(x => x.name === "rm-304").send(embedlogs)
+                            bot.channels.find(x => x.name === "rm-303").send(embedlogs)
                             
                         }).catch(function(err){
                             console.error(err)
