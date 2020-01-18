@@ -1,9 +1,6 @@
 const Discord = require('discord.js');
 const ms = require(`ms`);
-module.exports = {
-    name: 'mute',
-    description: "mutes a person",
-    execute(message, args, bot){
+exports.run = (message, args, bot)=> {
        if(message.member.roles.find(r => r.name === "Admins")){
     
                 let muterole = message.guild.roles.find(x => x.name ==="Muted");
@@ -161,4 +158,17 @@ module.exports = {
            return message.channel.send("You do not have permissions to use this command")
        }
     }
-}
+
+
+exports.conf = {
+  enabled: true,
+  guildOnly: false,
+  aliases: [],
+  permLevel: 3
+};
+
+exports.help = {
+  name: 'Mute',
+  description: 'Mutes a mentioned user',
+  usage: '!mute [mention]'
+};

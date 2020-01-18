@@ -1,9 +1,7 @@
 const Discord = require('discord.js');
-module.exports = {
-    name: 'kick',
-    description: "kicks a person",
-    execute(message, args, bot){
-        if(!message.member.roles.some(r=>["Admins"].includes(r.name)) )
+
+exports.run = (message, args, bot) => {
+          if(!message.member.roles.some(r=>["Admins"].includes(r.name)) )
       return message.reply("Sorry, you don't have permissions to use this!");
     
     // Let's first check if we have a member and if we can kick them!
@@ -59,4 +57,16 @@ module.exports = {
         .setTimestamp(message.createdAt)
         bot.channels.find(x => x.name === "modlogs").send(embedlogs)
     }
-}
+
+exports.conf = {
+  enabled: true,
+  guildOnly: false,
+  aliases: [],
+  permLevel: 3
+};
+
+exports.help = {
+  name: 'Kick',
+  description: 'Kicks the user that is mentioned.',
+  usage: '!kick [mention] <reason>'
+};

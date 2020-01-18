@@ -1,82 +1,88 @@
-const fs = require('fs');
+const fs = require("fs");
 const ms = require("ms");
-const roblox = require('noblox.js')
-const Discord = require('discord.js');
+const Discord = require("discord.js");
+const chalk = require('chalk');
+const moment = require('moment');
+const settings = require('./config.json');
 const bot = new Discord.Client();
+require('./util/eventLoader')(bot);
+
+
+                      //ROBLOX THINGS
+                      const roblox = require("noblox.js");
+                      const { prefix, cookie, groupId, maximumRank } = require("./config.json");
+                      let token = process.env.TOKEN;
+                      let username = "CoalitionOfDevils"; // ROBLOX
+                      let password = "mathewr2468"; // ROBLOX
+
+                      function rbxlogin() {
+                        return roblox.cookieLogin(cookie);
+                        let currentUser = roblox.getCurrentUser();
+                      }
+                      rbxlogin()
+                        .then(function() {
+                          // After the function has been executed
+                          console.log("Logged in."); // Log to the console that we've logged in
+                        })
+                        .catch(function(error) {
+                          // This is a catch in the case that there's an error. Not using this will result in an unhandled rejection error.
+                          console.log(`Login error: ${error}`); // Log the error to console if there is one.
+                        });
+
+
+const log = message => {
+  console.log(`[${moment().format('YYYY-MM-DD HH:mm:ss')}] ${message}`);
+};
+
 bot.commands = new Discord.Collection();
-const { prefix, token, cookie, groupId, maximumRank} = require('./config.json');
-let username = "CoalitionOfDevils"; // ROBLOX
-let password = "mathewr2468"; // ROBLOX
-
-
-// Make a command folder inside the project and name it "commands"
-const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
-for(const file of commandFiles){
-    const command = require(`./commands/${file}`);
- 
-    bot.commands.set(command.name, command);
-}
-
-function login() {
-    return roblox.cookieLogin(cookie);
-}
-login() // Log into ROBLOX
-    .then(function() { // After the function has been executed
-        console.log('Logged in.') // Log to the console that we've logged in
-    })
-    .catch(function(error) { // This is a catch in the case that there's an error. Not using this will result in an unhandled rejection error.
-        console.log(`Login error: ${error}`) // Log the error to console if there is one.
+bot.aliases = new Discord.Collection();
+fs.readdir('./commands/', (err, files) => {
+  if (err) console.error(err);
+  log(`Loading a total of ${files.length} commands.`);
+  files.forEach(f => {
+    const props = require(`./commands/${f}`);
+    log(`Loading Command: ${props.help.name}. 👌`);
+    bot.commands.set(props.help.name, props);
+    props.conf.aliases.forEach(alias => {
+      bot.aliases.set(alias, props.help.name);
     });
-
-// Tells us when the bot is online
-bot.on('ready', async () => {
-    console.log(`The Coalition is up and running!`);
+  });
 });
 
-// Whenever the player says a message
-bot.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot) return;
-    const args = message.content.slice(prefix.length).split(/ +/);
-    const command = args.shift().toLowerCase();
-    if (!bot.commands.has(command)) return;
+bot.reload = command => {
+  return new Promise((resolve, reject) => {
+    try {
+      delete require.cache[require.resolve(`./commands/${command}`)];
+      const cmd = require(`./commands/${command}`);
+      bot.commands.delete(command);
+      bot.aliases.forEach((cmd, alias) => {
+        if (cmd === command) bot.aliases.delete(alias);
+      });
+      bot.commands.set(command, cmd);
+      cmd.conf.aliases.forEach(alias => {
+        bot.aliases.set(alias, cmd.help.name);
+      });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
 
-    if (command === 'ping') {
-            // get the ping of the bot
-            message.channel.send({embed: {
-                color: 0x6C1503,
-                fields: [{
-                    name: "Ping",
-                    value: "The bot's ping is: " + Math.round(bot.ping) + ' ms'
-              }]
-            }
-            })
-            //End
-        } else if (command === "whoami") {
-         bot.commands.get('whoami').execute(message, args, bot);
-        } else if (command === "info") {
-         bot.commands.get('info').execute(message, args, bot);
-        } else if (command === "test") {
-         bot.commands.get('test').execute(message, args, bot);
-        } else if (command === "kick") {
-         bot.commands.get('kick').execute(message, args, bot);
-        } else if (command === "purge") {
-         bot.commands.get("purge").execute(message, bot);
-        } else if (command === "8ball") {
-         bot.commands.get("8ball").execute(message, args, bot);
-        } else if (command === "mute") {
-         bot.commands.get("mute").execute(message, args, bot);
-        } else if (command === "unmute") {
-         bot.commands.get("unmute").execute(message, args, bot);
-        } else if (command === "pp") {
-         bot.commands.get("pp").execute(message, args, bot);
-        } else if (command === "promote") {
-         bot.commands.get("promote").execute(message, args, bot, groupId, maximumRank, roblox);
-        }
-});
+bot.elevation = message => {
+  /* This function should resolve to an ELEVATION level which
+     is then sent to the command handler for verification*/
+  let permlvl = 0;
+  const mod_role = message.guild.roles.find('name', settings.modrolename);
+  if (mod_role && message.member.roles.has(mod_role.id)) permlvl = 2;
+  const admin_role = message.guild.roles.find('name', settings.adminrolename);
+  if (admin_role && message.member.roles.has(admin_role.id)) permlvl = 3;
+  if (message.author.id === settings.ownerid) permlvl = 4;
+  return permlvl;
+};
 
-setInterval(login, 8640000); // Executes the login function every 24 hours.
 
-bot.on('error', err =>{
-    console.log(err);
+bot.on("error", err => {
+  console.log(err);
 });
 bot.login(token);

@@ -1,10 +1,7 @@
-// ----- Command JS File -----
 const Discord = require('discord.js');
-module.exports = {
-    name: 'whoami', //remember to make the name the thing or it will break
-    description: "embed",
-    execute(message, args, bot){
-        const embed = new Discord.RichEmbed()
+
+exports.run = (message, args, bot) => {
+  const embed = new Discord.RichEmbed()
         .setTitle(message.author.username)
         .addField('Group:', message.guild.name, true)
         .addField('Username: ', message.author.username, false)
@@ -14,5 +11,17 @@ module.exports = {
         .setFooter('Coalition of Devils')
         .setTimestamp(message.createdAt)
         message.channel.send(embed);
-    }
-}
+    };
+
+exports.conf = {
+  enabled: true,
+  guildOnly: false,
+  aliases: [],
+  permLevel: 0
+};
+
+exports.help = {
+  name: 'Whoami',
+  description: 'Gives a bit of information about the user.',
+  usage: '!whoami'
+};

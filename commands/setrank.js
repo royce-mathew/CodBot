@@ -1,26 +1,35 @@
 const Discord = require('discord.js');
 
 exports.run = (message, args, bot, groupId, maximumRank, roblox) => {
-          if(!message.member.roles.some(r=>["Admins"].includes(r.name)) )
+  if(!message.member.roles.some(r=>["Admins"].includes(r.name)) )
       return message.reply("Sorry, you do not have permissions to use this command!");
       var username = args[0]
+        var rankIdentifier = Number(args[1]) ? Number(args[1]) : args[1];
+        if (!rankIdentifier) return message.channel.send("Please enter a rank");
         if (username){
             message.channel.send(`Checking ROBLOX for ${username}`)
             roblox.getIdFromUsername(username)
             .then(function(id){
                 roblox.getRankInGroup(groupId, id)
-                .then(function(rank){  
-                  if(maximumRank <= rank){
-                        message.channel.send(`${id} is rank ${rank} and not promotable.`);
+                .then(function(rank){
+                    if(maximumRank <= rank){
+                       const embed = new Discord.RichEmbed()
+                            .setTitle(`Error`)
+                            .addField(`**Unable to promote**`,`${username}`, false)
+                            .addField(`**Reason:**`,`Input rank is higher than the max rank`, false)
+                            .setColor(0x6C1503) // remember the 0x
+                            .setAuthor('Coalition Of Devils', "https://cdn.discordapp.com/attachments/629083352863080458/662722405755781140/cod.png")
+                            .setFooter(`${message.author.tag} (ADMIN)`, `${message.author.avatarURL}` )
+                            .setTimestamp(message.createdAt)
+                            message.channel.send(embed)
                     } else {
-                        roblox.promote(groupId, id)
-                        .then(function(roles){
-                           const embed = new Discord.RichEmbed()
+                        roblox.setRank(groupId, id, rankIdentifier+1)
+                        .then(function(newRole){
+                        const    embed = new Discord.RichEmbed()
                             .setTitle('PROMOTED')
                             .addField(`**Username:**`,`${username}`,false)
                             .addField(`**User ID:**`,`${id}`,false)
-                            .addField(`**Promoted to:**`,`${roles.newRole.Name}` , false)
-                            .addField(`**Older Role:**`,`${roles.oldRole.Name}`, false)
+                            .addField(`**Promoted to:**`,`${newRole.name}` , false)
                             .setColor(0x6C1503) // remember the 0x
                             .setAuthor('Coalition Of Devils', "https://cdn.discordapp.com/attachments/629083352863080458/662722405755781140/cod.png")
                             .setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${id}&width=420&height=420&format=png`)
@@ -29,12 +38,11 @@ exports.run = (message, args, bot, groupId, maximumRank, roblox) => {
                             message.channel.send(embed)
 
                             //logs
-                           const embedlogs = new Discord.RichEmbed()
+                          const  embedlogs = new Discord.RichEmbed()
                             .setTitle('PROMOTED')
                             .addField(`**Username:**`,`${username}`,false)
                             .addField(`**User ID:**`,`${id}`,false)
-                            .addField(`**Promoted to:**`,`${roles.newRole.Name}` , false)
-                            .addField(`**Older Role:**`,`${roles.oldRole.Name}`, false)
+                            .addField(`**Promoted to:**`,`${newRole.name}` , false)
                             .setColor(0x6C1503) // remember the 0x
                             .setAuthor('Coalition Of Devils', "https://cdn.discordapp.com/attachments/629083352863080458/662722405755781140/cod.png")
                             .setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${id}&width=420&height=420&format=png`)
@@ -43,53 +51,52 @@ exports.run = (message, args, bot, groupId, maximumRank, roblox) => {
                             bot.channels.find(x => x.name === "rm-303").send(embedlogs)
                             
                         }).catch(function(err){
-                            console.error(err);
-                            const embed = new Discord.RichEmbed()
+                            console.error(err)
+                          const  embed = new Discord.RichEmbed()
                             .setTitle(`Error`)
                             .addField(`**Unable to promote**`,`${username}`, false)
-                            .addField(`**Reason:**`,`Failed to change rank`, false)
+                            .addField(`**Reason:**`,`Invalid role number`, false)
                             .setColor(0x6C1503) // remember the 0x
                             .setAuthor('Coalition Of Devils', "https://cdn.discordapp.com/attachments/629083352863080458/662722405755781140/cod.png")
                             .setFooter(`${message.author.tag} (ADMIN)`, `${message.author.avatarURL}` )
                             .setTimestamp(message.createdAt)
-                            message.channel.send(embed) 
+                            message.channel.send(embed)
                         });
                     }
                 }).catch(function(err){
-                    const embed = new Discord.RichEmbed()
+                          const  embed = new Discord.RichEmbed()
                             .setTitle(`Error`)
                             .addField(`**Unable to promote**`,`${username}`, false)
-                            .addField(`**Reason:**`,`User is not inside group`, false)
+                            .addField(`**Reason:**`,`User is not inside the group`, false)
                             .setColor(0x6C1503) // remember the 0x
                             .setAuthor('Coalition Of Devils', "https://cdn.discordapp.com/attachments/629083352863080458/662722405755781140/cod.png")
                             .setFooter(`${message.author.tag} (ADMIN)`, `${message.author.avatarURL}` )
                             .setTimestamp(message.createdAt)
-                            message.channel.send(embed) 
+                            message.channel.send(embed)
                 });
             }).catch(function(err){
-                const embed = new Discord.RichEmbed()
+                          const  embed = new Discord.RichEmbed()
                             .setTitle(`Error`)
-                            .addField(`**Unable to promote**`,`${username}`, false)
-                            .addField(`**Reason:**`,`User is not on the ROBLOX website.`, false)
+                            .addField(`**Unable to promote **`,`${username}`, false)
+                            .addField(`**Reason:**`,`User not found on the ROBLOX website`, false)
                             .setColor(0x6C1503) // remember the 0x
                             .setAuthor('Coalition Of Devils', "https://cdn.discordapp.com/attachments/629083352863080458/662722405755781140/cod.png")
                             .setFooter(`${message.author.tag} (ADMIN)`, `${message.author.avatarURL}` )
                             .setTimestamp(message.createdAt)
-                            message.channel.send(embed) 
+                            message.channel.send(embed)
           });
       } else {
-                      const embed = new Discord.RichEmbed()
+                         const   embed = new Discord.RichEmbed()
                             .setTitle(`Error`)
                             .addField(`**Unable to promote**`,`${username}`, false)
-                            .addField(`**Reason:**`,`Please enter a username`, false)
+                            .addField(`**Reason:**`,`Please enter a username from the ROBLOX website`, false)
                             .setColor(0x6C1503) // remember the 0x
                             .setAuthor('Coalition Of Devils', "https://cdn.discordapp.com/attachments/629083352863080458/662722405755781140/cod.png")
                             .setFooter(`${message.author.tag} (ADMIN)`, `${message.author.avatarURL}` )
                             .setTimestamp(message.createdAt)
                             message.channel.send(embed) 
       }
-      return;
-  }
+    };
 
 exports.conf = {
   enabled: true,
@@ -99,7 +106,7 @@ exports.conf = {
 };
 
 exports.help = {
-  name: 'Promote',
-  description: 'Promotes a user in the Roblox group.',
-  usage: '!promote <Roblox Username>'
+  name: 'Setrank',
+  description: 'Ranks a person with their roblox username',
+  usage: '!setrank <Roblox username> <rank>'
 };

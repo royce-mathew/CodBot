@@ -1,9 +1,7 @@
 const Discord = require('discord.js');
-module.exports = {
-    name: 'unmute',
-    description: "unmutes a person",
-    execute(message, args, bot){
-       if(message.member.roles.find(r => r.name === "Admins")){
+
+exports.run = (message, args, bot) => {
+  if(message.member.roles.find(r => r.name === "Admins")){
         let mutedrole = message.guild.roles.find(`name`,"Muted");
         var unmutedmember = message.mentions.members.first(); // sets the mentioned user to the var kickedmember
         if (!unmutedmember) return message.reply("Please mention a valid member of this server!") // if there is no kickedmmeber var
@@ -40,5 +38,17 @@ module.exports = {
        } else {
            return message.channel.send("You do not have permissions to use this command")
        }
-    }
-}
+    };
+
+exports.conf = {
+  enabled: true,
+  guildOnly: false,
+  aliases: [],
+  permLevel: 0
+};
+
+exports.help = {
+  name: 'Unmute',
+  description: 'Unmutes a user.',
+  usage: '!unmute [mention]'
+};

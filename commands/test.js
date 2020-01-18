@@ -1,11 +1,22 @@
-module.exports = {
-    name: 'test',
-    description: "tells if a person is an admin or not",
-    execute(message, args, bot){
-       if(message.member.roles.find(r => r.name === "Admins")){
+const Discord = require('discord.js');
+
+exports.run = (message, args, bot) => {
+  if(message.member.roles.find(r => r.name === "Admins")){
            message.reply('You are an admin')
        } else {
            return message.channel.send("You do not have permissions to use this command")
        }
-    }
-}
+    };
+
+exports.conf = {
+  enabled: true,
+  guildOnly: false,
+  aliases: [],
+  permLevel: 0
+};
+
+exports.help = {
+  name: 'Test',
+  description: 'testing command, tells you whether you are an admin or not',
+  usage: '!test'
+};

@@ -10,16 +10,12 @@ const responses = [
     "8=======D",
     "8========D",
     "8=========D",
-    "8==========D"
+    "8==========D",
+    "Too big for this bot"
 ];
 
-
-// ----- Command JS File -----
-module.exports = {
-    name: 'pp',
-    description: "random pp",
-    execute(message, args, bot){
-        const randomIndex = Math.floor(Math.random() * responses.length);
+exports.run = (message, args, bot) => {
+  const randomIndex = Math.floor(Math.random() * responses.length);
         var mentioned = message.mentions.members.first();
         if (!mentioned) return message.reply("@ someone to use this command")
         const embed = new Discord.RichEmbed()
@@ -28,5 +24,17 @@ module.exports = {
         .setTitle("Coalition of Devils")
         .setTimestamp(message.createdAt)
         message.channel.send(embed)
-    }
-}
+    };
+
+exports.conf = {
+  enabled: true,
+  guildOnly: false,
+  aliases: ["penis", "ppsize"],
+  permLevel: 0
+};
+
+exports.help = {
+  name: 'PP',
+  description: 'Tells the pp size of a user.',
+  usage: '!pp [mention]'
+};
