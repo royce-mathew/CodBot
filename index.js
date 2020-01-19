@@ -4,8 +4,33 @@ const Discord = require("discord.js");
 const chalk = require('chalk');
 const moment = require('moment');
 const settings = require('./config.json');
-const bot = new Discord.Client();
-require('./util/eventLoader')(bot);
+const client = new Discord.Client();
+const { promisify } = require("util");
+const readdir = promisify(require("fs").readdir);
+const Enmap = require("enmap");
+
+// Config File
+client.config = require("./config.js");
+
+//Logger File
+client.logger = require("./modules/Logger");
+
+// Let's start by getting some useful functions that we'll use throughout
+// the bot, like logs and elevation features.
+require("./modules/functions.js")(client);
+
+// Aliases and commands are put in collections where they can be read from,
+// catalogued, listed, etc.
+client.commands = new Enmap();
+client.aliases = new Enmap();
+
+// Now we integrate the use of Evie's awesome EnMap module, which
+// essentially saves a collection to disk. This is great for per-server configs,
+// and makes things extremely easy for this purpose.
+client.settings = new Enmap({name: "settings"});
+
+//Checks if the node version that is required is the same as the node version that is needed to run the bot
+if (Number(process.version.slice(1).split(".")[0]) < 8) throw new Error("Node 8.0.0 or higher is required. Update Node on your system.");
 
 
                       //ROBLOX THINGS
@@ -30,59 +55,56 @@ require('./util/eventLoader')(bot);
                         });
 
 
-const log = message => {
-  console.log(`[${moment().format('YYYY-MM-DD HH:mm:ss')}] ${message}`);
-};
+                      // Express thing, Pings the bot to keep it online.
+                      const http = require('http');
+                      const express = require('express');
+                      const app = express();
+                      app.get("/", (request, response) => {
+                        console.log(Date.now() + " Ping Received");
+                        response.sendStatus(200);
+                      });
+                      app.listen(process.env.PORT);
+                      setInterval(() => {
+                        http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
+                      }, 280000);
 
-bot.commands = new Discord.Collection();
-bot.aliases = new Discord.Collection();
-fs.readdir('./commands/', (err, files) => {
-  if (err) console.error(err);
-  log(`Loading a total of ${files.length} commands.`);
-  files.forEach(f => {
-    const props = require(`./commands/${f}`);
-    log(`Loading Command: ${props.help.name}. 👌`);
-    bot.commands.set(props.help.name, props);
-    props.conf.aliases.forEach(alias => {
-      bot.aliases.set(alias, props.help.name);
-    });
+
+
+
+const init = async () => {
+
+  // Here we load **commands** into memory, as a collection, so they're accessible
+  // here and everywhere else.
+  const cmdFiles = await readdir("./commands/");
+  client.logger.log(`Loading a total of ${cmdFiles.length} commands.`);
+  cmdFiles.forEach(f => {
+    if (!f.endsWith(".js")) return;
+    const response = client.loadCommand(f);
+    if (response) console.log(response);
   });
-});
 
-bot.reload = command => {
-  return new Promise((resolve, reject) => {
-    try {
-      delete require.cache[require.resolve(`./commands/${command}`)];
-      const cmd = require(`./commands/${command}`);
-      bot.commands.delete(command);
-      bot.aliases.forEach((cmd, alias) => {
-        if (cmd === command) bot.aliases.delete(alias);
-      });
-      bot.commands.set(command, cmd);
-      cmd.conf.aliases.forEach(alias => {
-        bot.aliases.set(alias, cmd.help.name);
-      });
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
+  // Then we load events, which will include our message and ready event.
+  const evtFiles = await readdir("./events/");
+  client.logger.log(`Loading a total of ${evtFiles.length} events.`);
+  evtFiles.forEach(file => {
+    const eventName = file.split(".")[0];
+    client.logger.log(`Loading Event: ${eventName}`);
+    const event = require(`./events/${file}`);
+    // Bind the client to any event, before the existing arguments
+    // provided by the discord.js event. 
+    // This line is awesome by the way. Just sayin'.
+    client.on(eventName, event.bind(null, client));
   });
-};
 
-bot.elevation = message => {
-  /* This function should resolve to an ELEVATION level which
-     is then sent to the command handler for verification*/
-  let permlvl = 0;
-  const mod_role = message.guild.roles.find('name', settings.modrolename);
-  if (mod_role && message.member.roles.has(mod_role.id)) permlvl = 2;
-  const admin_role = message.guild.roles.find('name', settings.adminrolename);
-  if (admin_role && message.member.roles.has(admin_role.id)) permlvl = 3;
-  if (message.author.id === settings.ownerid) permlvl = 4;
-  return permlvl;
-};
+  // Generate a cache of client permissions for pretty perm names in commands.
+  client.levelCache = {};
+  for (let i = 0; i < client.config.permLevels.length; i++) {
+    const thisLevel = client.config.permLevels[i];
+    client.levelCache[thisLevel.name] = thisLevel.level;
+  }
+}
 
-
-bot.on("error", err => {
+client.on("error", err => {
   console.log(err);
 });
-bot.login(token);
+client.login(token);

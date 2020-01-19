@@ -99,7 +99,7 @@ exports.run = (message, args, bot, groupId, maximumRank, roblox) => {
 exports.conf = {
   enabled: true,
   guildOnly: false,
-  aliases: [],
+  aliases: ["demote"],
   permLevel: 3
 };
 

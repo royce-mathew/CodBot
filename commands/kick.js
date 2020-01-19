@@ -61,7 +61,7 @@ exports.run = (message, args, bot) => {
 exports.conf = {
   enabled: true,
   guildOnly: false,
-  aliases: [],
+  aliases: ["kick"],
   permLevel: 3
 };
 

@@ -94,7 +94,7 @@ exports.run = (message, args, bot, groupId, maximumRank, roblox) => {
 exports.conf = {
   enabled: true,
   guildOnly: false,
-  aliases: [],
+  aliases: ["promote"],
   permLevel: 3
 };
 

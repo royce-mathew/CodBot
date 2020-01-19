@@ -37,7 +37,7 @@ exports.run = (bot, message, args) => {
 exports.conf = {
   enabled: true,
   guildOnly: false,
-  aliases: ['ld'],
+  aliases: ['ld', "lockdown"],
   permLevel: 3
 };
 

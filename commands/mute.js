@@ -1,10 +1,8 @@
 const Discord = require('discord.js');
 const ms = require(`ms`);
 exports.run = (message, args, bot)=> {
-       if(message.member.roles.find(r => r.name === "Admins")){
-    
-                let muterole = message.guild.roles.find(x => x.name ==="Muted");
-                let tomute = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+               const muterole = message.guild.roles.find(x => x.name ==="Muted");
+                const tomute = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
                 if(!tomute) return message.reply("Couldn't find user.");
                 if(tomute.hasPermission("MANAGE_MESSAGES")) return message.reply("Can't mute them!");
 
@@ -154,16 +152,12 @@ exports.run = (message, args, bot)=> {
                     bot.channels.find(x => x.name ==="modlogs").send(embedlogs)
                 }, ms(mutetime));
                 
-       } else {
-           return message.channel.send("You do not have permissions to use this command")
-       }
-    }
-
+} 
 
 exports.conf = {
   enabled: true,
   guildOnly: false,
-  aliases: [],
+  aliases: ["mute"],
   permLevel: 3
 };
 

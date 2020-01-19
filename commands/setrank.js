@@ -101,7 +101,7 @@ exports.run = (message, args, bot, groupId, maximumRank, roblox) => {
 exports.conf = {
   enabled: true,
   guildOnly: false,
-  aliases: [],
+  aliases: ["setrank", "sr"],
   permLevel: 3
 };
 

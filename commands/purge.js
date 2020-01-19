@@ -33,7 +33,7 @@ exports.run = function(bot, message, args) {
 exports.conf = {
   enabled: true,
   guildOnly: false,
-  aliases: [],
+  aliases: ["purge"],
   permLevel: 3
 };
 

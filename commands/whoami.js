@@ -16,12 +16,12 @@ exports.run = (message, args, bot) => {
 exports.conf = {
   enabled: true,
   guildOnly: false,
-  aliases: [],
+  aliases: ["whoami", "Whoami", "WhoAmi", "WhoamI"],
   permLevel: 0
 };
 
 exports.help = {
-  name: 'Whoami',
+  name: 'WhoAmI',
   description: 'Gives a bit of information about the user.',
   usage: '!whoami'
 };
