@@ -1,0 +1,41 @@
+{
+  "name": "codbot",
+  "version": "1.0.0",
+  "description": "The bot for coalition of devils server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": "13.3.x"
+  },
+  "author": "Masquence",
+  "license": "ISC",
+  "dependencies": {
+    "ansi-colors": "^4.1.1",
+    "better-sqlite-pool": "^0.3.0",
+    "better-sqlite3": "^6.0.1",
+    "chalk": "^3.0.0",
+    "crypto": "^1.0.1",
+    "crypto-js": "^3.3.0",
+    "discord.js": "github:discordjs/discord.js",
+    "dotenv": "^8.2.0",
+    "enmap": "^5.6.1",
+    "es": "^0.7.3",
+    "escape-string-regexp": "^2.0.0",
+    "fs": "0.0.1-security",
+    "inquirer": "^7.3.3",
+    "jimp": "^0.9.8",
+    "moment": "^2.27.0",
+    "moment-duration-format": "^2.3.2",
+    "mongoose": "^5.9.28",
+    "ms": "^2.1.2",
+    "node-fetch": "^2.6.0",
+    "nodejs": "0.0.0",
+    "path": "^0.12.7",
+    "sqlite": "^3.0.6",
+    "superagent": "^5.3.1",
+    "ws": "^7.3.1"
+  }
+}
